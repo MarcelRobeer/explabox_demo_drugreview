@@ -44,7 +44,7 @@ import instancelib as il
 import ilonnx
 
 
-MODEL_URL = 'https://git.science.uu.nl/m.j.robeer/explabox-demo-drugreview/-/raw/main/explabox_demo_drugreview/assets/model.onnx'
+MODEL_URL = 'https://github.com/MarcelRobeer/explabox_demo_drugreview/raw/refs/heads/master/explabox_demo_drugreview/assets/'
 MODEL_MD5 = 'c039b13f50d9086dc426c4d6bfceda53'
 
 
@@ -84,7 +84,7 @@ def check_md5(filename, md5):
     return hashlib.md5(open(filename, 'rb').read()).hexdigest() == md5
 
 
-def download_file(url, filename):
+def download_file(url, files, filename):
     def hook(t):
         last_b = [0]
 
@@ -106,9 +106,12 @@ def download_file(url, filename):
 
     from urllib.request import urlretrieve
     from tqdm.auto import tqdm
+    from filesplit.merge import Merge 
 
-    with tqdm(unit='B', unit_scale=True, unit_divisor=1024, miniters=1, desc='Downloading assets') as t:
-        urlretrieve(url, filename=filename, reporthook=hook(t), data=None)
+    for file in files:
+        with tqdm(unit='B', unit_scale=True, unit_divisor=1024, miniters=1, desc='Downloading assets') as t:
+            urlretrieve(f'{url}{file}', filename=file, reporthook=hook(t), data=None)
+    Merge('.', '.', filename).merge()
     return check_md5(filename, MODEL_MD5)
 
 
@@ -130,7 +133,7 @@ class Inner:
             with open(path / 'tokenizer.pkl', 'rb') as file:
                 self.__tokenizer = pickle.load(file)
         if not model_path.is_file() or model_path.is_file() and not check_md5(model_path, MODEL_MD5):
-            if download_file(MODEL_URL, str(model_path)):
+            if download_file(MODEL_URL, ['model_0001.onnx', 'model_0002.onnx'], str(model_path)):
                 print('Successfully downloaded all assets. You are good to go!')
         self.__model = ort.InferenceSession(str(path / 'model.onnx'))
 

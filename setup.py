@@ -12,7 +12,7 @@ setuptools.setup(  # type: ignore
     long_description_content_type="text/markdown",
     author="NPAI",
     packages=setuptools.find_packages(),  # type : ignore
-    install_requires=["explabox>=0.9b7", "jupyter>=1.0.0", "tokenizers>=0.11.6", "transformers", "tqdm>=4.62.3"],
+    install_requires=["explabox>=0.9b7", "jupyter>=1.0.0", "tokenizers>=0.11.6", "transformers", "tqdm>=4.62.3", "filesplit>=4.1.0"],
     python_requires=">=3.8",
     include_package_data=True,
     package_data={"": ["assets/drugsCom.zip", "assets/tokenizer.pkl"]}
