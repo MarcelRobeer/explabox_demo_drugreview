@@ -108,8 +108,8 @@ def download_file(url, files, filename):
     from tqdm.auto import tqdm
     from filesplit.merge import Merge 
 
-    for file in files:
-        with tqdm(unit='B', unit_scale=True, unit_divisor=1024, miniters=1, desc='Downloading assets') as t:
+    for i, file in enumerate(files, start=1):
+        with tqdm(unit='B', unit_scale=True, unit_divisor=1024, miniters=1, desc=f'Downloading asset {i}') as t:
             urlretrieve(f'{url}{file}', filename=file, reporthook=hook(t), data=None)
     Merge('.', '.', filename).merge()
     return check_md5(filename, MODEL_MD5)
@@ -133,8 +133,13 @@ class Inner:
             with open(path / 'tokenizer.pkl', 'rb') as file:
                 self.__tokenizer = pickle.load(file)
         if not model_path.is_file() or model_path.is_file() and not check_md5(model_path, MODEL_MD5):
-            if download_file(MODEL_URL, ['model_0001.onnx', 'model_0002.onnx'], str(model_path)):
-                print('Successfully downloaded all assets. You are good to go!')
+            files = ['manifest', 'model_0001.onnx', 'model_0002.onnx']
+            if download_file(MODEL_URL, files, str(model_path)):
+                print('Successfully downloaded all assets.')
+                from pathlib import Path
+                for file in files:
+                    Path(file).unlink()
+                print('Cleaned temporary files. You are good to go!')
         self.__model = ort.InferenceSession(str(path / 'model.onnx'))
 
     @singledispatchmethod

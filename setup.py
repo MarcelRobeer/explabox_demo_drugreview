@@ -6,7 +6,7 @@ with open(path.join(path.abspath(path.dirname(__file__)), "README.md"), encoding
 
 setuptools.setup(  # type: ignore
     name="explabox-demo-drugreview",
-    version="0.9b12",
+    version="1.0.0",
     description="Explabox demo for the UCI drug reviews dataset",
     long_description=long_description,
     long_description_content_type="text/markdown",

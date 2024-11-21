@@ -118,3 +118,9 @@ dmypy.json
 
 # sh
 release.sh
+
+# Model files
+*/assets/model.onnx
+model.onnx
+model_*.onnx
+manifest
